@@ -50,7 +50,7 @@ class ClockView(
             initDefaultAttr()
         }
         initPaints()
-        GlobalClock.subscribeClock(this)
+
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -59,6 +59,11 @@ class ClockView(
             resolveSize(minSide,widthMeasureSpec),
             resolveSize(minSide,heightMeasureSpec)
         )
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        GlobalClock.subscribeClock(this)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {

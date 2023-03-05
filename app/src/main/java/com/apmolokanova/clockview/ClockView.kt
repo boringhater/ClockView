@@ -16,9 +16,9 @@ import kotlin.properties.Delegates
 class ClockView(
     context: Context,
     attrSet: AttributeSet?,
-    defStyleAttr : Int,
+    defStyleAttr: Int,
     defStyleRes: Int
-): View(context,attrSet,defStyleAttr,defStyleRes) {
+) : View(context, attrSet, defStyleAttr, defStyleRes) {
     private var hourHandColor by Delegates.notNull<Int>()
     private var minuteHandColor by Delegates.notNull<Int>()
     private var secondHandColor by Delegates.notNull<Int>()
@@ -39,13 +39,24 @@ class ClockView(
     private lateinit var dialPaint: Paint
     private lateinit var numbersPaint: Paint
 
-    constructor(context: Context,attrSet: AttributeSet?,defStyleAttr: Int) : this(context,attrSet,defStyleAttr,R.style.DefaultClockStyle)
-    constructor(context: Context,attrSet: AttributeSet?) : this(context,attrSet,R.attr.clockStyle)
-    constructor(context: Context) : this(context,null)
+    constructor(context: Context, attrSet: AttributeSet?, defStyleAttr: Int) : this(
+        context,
+        attrSet,
+        defStyleAttr,
+        R.style.DefaultClockStyle
+    )
+
+    constructor(context: Context, attrSet: AttributeSet?) : this(
+        context,
+        attrSet,
+        R.attr.clockStyle
+    )
+
+    constructor(context: Context) : this(context, null)
 
     init {
-        if(attrSet != null) {
-            initAttr(attrSet,defStyleAttr,defStyleRes)
+        if (attrSet != null) {
+            initAttr(attrSet, defStyleAttr, defStyleRes)
         } else {
             initDefaultAttr()
         }
@@ -54,10 +65,13 @@ class ClockView(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val minSide = max(suggestedMinimumWidth + paddingLeft + paddingRight, suggestedMinimumHeight + paddingTop + paddingBottom)
+        val minSide = max(
+            suggestedMinimumWidth + paddingLeft + paddingRight,
+            suggestedMinimumHeight + paddingTop + paddingBottom
+        )
         setMeasuredDimension(
-            resolveSize(minSide,widthMeasureSpec),
-            resolveSize(minSide,heightMeasureSpec)
+            resolveSize(minSide, widthMeasureSpec),
+            resolveSize(minSide, heightMeasureSpec)
         )
     }
 
@@ -86,14 +100,19 @@ class ClockView(
         val secondX = getX(GlobalClock.secondAngle)
         val secondY = getY(GlobalClock.secondAngle)
 
-        canvas.drawCircle(centerX,centerY,radius,dialPaint)
-        drawHand(canvas,hourX,hourY,hourLength,hourPaint)
-        drawHand(canvas,minuteX,minuteY,minuteLength,minutePaint)
-        drawHand(canvas,secondX,secondY,secondLength,secondPaint)
-        canvas.drawCircle(centerX,centerY,0.01f*radius,hourPaint)
+        canvas.drawCircle(centerX, centerY, radius, dialPaint)
+        drawHand(canvas, hourX, hourY, hourLength, hourPaint)
+        drawHand(canvas, minuteX, minuteY, minuteLength, minutePaint)
+        drawHand(canvas, secondX, secondY, secondLength, secondPaint)
+        canvas.drawCircle(centerX, centerY, 0.01f * radius, hourPaint)
 
-        for(i in DIAL_ANGLES.indices) {
-            canvas.drawText("${i+1}",centerX+numberRadius*getX(DIAL_ANGLES[i]),centerY+numberRadius* getY(DIAL_ANGLES[i])+numbersPaint.textSize/2,numbersPaint)
+        for (i in DIAL_ANGLES.indices) {
+            canvas.drawText(
+                "${i + 1}",
+                centerX + numberRadius * getX(DIAL_ANGLES[i]),
+                centerY + numberRadius * getY(DIAL_ANGLES[i]) + numbersPaint.textSize / 2,
+                numbersPaint
+            )
         }
     }
 
@@ -102,8 +121,14 @@ class ClockView(
         GlobalClock.unsubscribeClock(this)
     }
 
-    private fun drawHand(canvas: Canvas, x: Float,y: Float, length: Float, paint: Paint) {
-        canvas.drawLine(centerX-0.2f*length*x,centerY-0.2f*length*y,x*length+centerX,y*length+centerY,paint)
+    private fun drawHand(canvas: Canvas, x: Float, y: Float, length: Float, paint: Paint) {
+        canvas.drawLine(
+            centerX - 0.2f * length * x,
+            centerY - 0.2f * length * y,
+            x * length + centerX,
+            y * length + centerY,
+            paint
+        )
     }
 
     private fun initPaints() {
@@ -129,31 +154,61 @@ class ClockView(
     }
 
     private fun updateMeasures() {
-        radius = min(width - paddingLeft - paddingRight,height - paddingBottom - paddingTop)/2.toFloat()
-        radius -= ceil(radius/DIAL_STROKE_RATIO)
-        centerX = paddingLeft + (width - paddingLeft - paddingRight)/2.toFloat()
-        centerY = paddingTop + (height - paddingTop + paddingBottom.toFloat())/2
-        hourLength = radius*0.4f
-        minuteLength = radius*0.8f
-        secondLength = radius*0.8f
-        numberRadius = radius*0.9f
+        radius = min(
+            width - paddingLeft - paddingRight,
+            height - paddingBottom - paddingTop
+        ) / 2.toFloat()
+        radius -= ceil(radius / DIAL_STROKE_RATIO)
+        centerX = paddingLeft + (width - paddingLeft - paddingRight) / 2.toFloat()
+        centerY = paddingTop + (height - paddingTop + paddingBottom.toFloat()) / 2
+        hourLength = radius * 0.4f
+        minuteLength = radius * 0.8f
+        secondLength = radius * 0.8f
+        numberRadius = radius * 0.9f
 
-        hourPaint.strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radius/ HOUR_STROKE_RATIO,resources.displayMetrics)
-        minutePaint.strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radius/ MINUTE_STROKE_RATIO,resources.displayMetrics)
-        secondPaint.strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radius/ SECOND_STROKE_RATIO,resources.displayMetrics)
-        dialPaint.strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radius/ DIAL_STROKE_RATIO,resources.displayMetrics)
+        hourPaint.strokeWidth = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            radius / HOUR_STROKE_RATIO,
+            resources.displayMetrics
+        )
+        minutePaint.strokeWidth = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            radius / MINUTE_STROKE_RATIO,
+            resources.displayMetrics
+        )
+        secondPaint.strokeWidth = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            radius / SECOND_STROKE_RATIO,
+            resources.displayMetrics
+        )
+        dialPaint.strokeWidth = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            radius / DIAL_STROKE_RATIO,
+            resources.displayMetrics
+        )
 
-        numbersPaint.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radius * numbersSize/500 ,resources.displayMetrics)
+        numbersPaint.textSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            radius * numbersSize / 500,
+            resources.displayMetrics
+        )
     }
 
-    private fun getY(angle: Double) : Float = sin(angle).toFloat()
-    private fun getX(angle: Double) : Float = cos(angle).toFloat()
+    private fun getY(angle: Double): Float = sin(angle).toFloat()
+    private fun getX(angle: Double): Float = cos(angle).toFloat()
 
-    private fun initAttr(attrSet: AttributeSet?, defStyleAttr : Int, defStyleRes: Int) {
-        val attrArray = context.obtainStyledAttributes(attrSet,R.styleable.ClockView,defStyleAttr,defStyleRes)
+    private fun initAttr(attrSet: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
+        val attrArray = context.obtainStyledAttributes(
+            attrSet,
+            R.styleable.ClockView,
+            defStyleAttr,
+            defStyleRes
+        )
         hourHandColor = attrArray.getColor(R.styleable.ClockView_hourHandColor, HOUR_DEFAULT_COLOR)
-        minuteHandColor = attrArray.getColor(R.styleable.ClockView_minuteHandColor, MINUTE_DEFAULT_COLOR)
-        secondHandColor = attrArray.getColor(R.styleable.ClockView_secondHandColor, SECOND_DEFAULT_COLOR)
+        minuteHandColor =
+            attrArray.getColor(R.styleable.ClockView_minuteHandColor, MINUTE_DEFAULT_COLOR)
+        secondHandColor =
+            attrArray.getColor(R.styleable.ClockView_secondHandColor, SECOND_DEFAULT_COLOR)
         dialColor = attrArray.getColor(R.styleable.ClockView_dialColor, DIAL_DEFAULT_COLOR)
         numbersSize = attrArray.getInt(R.styleable.ClockView_numbersSize, NUMBERS_DEFAULT_SIZE)
         attrArray.recycle()
@@ -167,8 +222,8 @@ class ClockView(
         numbersSize = NUMBERS_DEFAULT_SIZE
     }
 
-    companion object{
-        private val DIAL_ANGLES = DoubleArray(12) {i -> Math.PI*(i+1)/6 - Math.PI/2}
+    companion object {
+        private val DIAL_ANGLES = DoubleArray(12) { i -> Math.PI * (i + 1) / 6 - Math.PI / 2 }
 
         const val DIAL_DEFAULT_COLOR = Color.BLACK
         const val HOUR_DEFAULT_COLOR = Color.BLACK
@@ -181,38 +236,38 @@ class ClockView(
         const val MINUTE_STROKE_RATIO = 75
         const val SECOND_STROKE_RATIO = 85
     }
-    private class GlobalClock() {
-        companion object {
-            private const val TIMER_NAME = "clockViewInvalidationTimer"
-            private const val INVALIDATION_PERIOD = 1000L
 
-            private val clocksList: LinkedList<ClockView> = LinkedList()
+    private object GlobalClock {
+        private const val TIMER_NAME = "clockViewInvalidationTimer"
+        private const val INVALIDATION_PERIOD = 1000L
 
-            var hourAngle: Double = 0.0
-                private set
-            var minuteAngle: Double = 0.0
-                private set
-            var secondAngle: Double= 0.0
-                private set
+        private val clocksList: LinkedList<ClockView> = LinkedList()
 
-            val timer = fixedRateTimer(TIMER_NAME,false,0L, INVALIDATION_PERIOD) {
-                updateTime()
-                clocksList.forEach { it.invalidate() }
-            }
+        var hourAngle: Double = 0.0
+            private set
+        var minuteAngle: Double = 0.0
+            private set
+        var secondAngle: Double = 0.0
+            private set
 
-            fun subscribeClock(clock: ClockView) {
-                clocksList.add(clock)
-            }
-            fun unsubscribeClock(clock: ClockView) {
-                clocksList.remove(clock)
-            }
+        val timer = fixedRateTimer(TIMER_NAME, false, 0L, INVALIDATION_PERIOD) {
+            updateTime()
+            clocksList.forEach { it.invalidate() }
+        }
 
-            private fun updateTime() {
-                val time = LocalTime.now()
-                hourAngle = Math.PI*(time.hour+time.minute/60.toDouble())/6 - Math.PI/2
-                minuteAngle = (Math.PI*(time.minute+time.second/60.toDouble())/30 - Math.PI/2)
-                secondAngle = (Math.PI*time.second/30 - Math.PI/2)
-            }
+        fun subscribeClock(clock: ClockView) {
+            clocksList.add(clock)
+        }
+
+        fun unsubscribeClock(clock: ClockView) {
+            clocksList.remove(clock)
+        }
+
+        private fun updateTime() {
+            val time = LocalTime.now()
+            hourAngle = Math.PI * (time.hour + time.minute / 60.toDouble()) / 6 - Math.PI / 2
+            minuteAngle = (Math.PI * (time.minute + time.second / 60.toDouble()) / 30 - Math.PI / 2)
+            secondAngle = (Math.PI * time.second / 30 - Math.PI / 2)
         }
     }
 }

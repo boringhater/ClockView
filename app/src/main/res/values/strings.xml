@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ClockView</string>
+    <string name="randomize_sizes">randomize sizes</string>
+</resources>
